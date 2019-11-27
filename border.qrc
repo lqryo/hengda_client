@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>res/min.png</file>
+        <file>res/max.png</file>
+        <file>res/normal.png</file>
+        <file>res/close.png</file>
+        <file>res/setting.png</file>
+        <file>res/monitor.png</file>
+        <file>res/record.png</file>
+        <file>res/pen.png</file>
+        <file>res/camera.png</file>
+
+        <file>res/circle.png</file>
+        <file>res/feather.png</file>
+        <file>res/line.png</file>
+        <file>res/rectangle.png</file>
+        <file>res/redo.png</file>
+        <file>res/right.png</file>
+        <file>res/undo.png</file>
+        <file>res/wrong.png</file>
+
+        <file>res/lines.png</file>
+        <file>res/polygon.png</file>
+    </qresource>
+    <qresource prefix="/qss">
+        <file>res/mainwindow.qss</file>
+        <file>res/menu.qss</file>
+        <file>res/table.qss</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,97 @@
+QWidget#mainwidget {
+    background-color: #f5f5f7;
+}
+
+/* 标题 */
+TitleBar {
+    background-color: #c62f2f;
+}
+
+QLabel#title {
+    color: #ffffff;
+    font-size: 22px;
+    font-family: "华文新魏";
+    background-color: #c62f2f;
+    margin-left: 5px;
+}
+
+QPushButton#min {
+    background-color: #c62f2f;
+    border: none;
+}
+
+QPushButton#max {
+    background-color: #c62f2f;
+    border: none;
+}
+
+QPushButton#close {
+    background-color: #c62f2f;
+    border: none;
+}
+
+QWidget#center_widget {
+    background: #ffffff;
+    border-right: 1px solid #dddddd;
+}
+QWidget#menu_widget {
+    background: #ededef;
+    border-right: 1px solid #dddddd;
+}
+
+/********************************************************************/
+/*commom*/
+QLabel {
+	font-size: 16px;
+}
+
+QLineEdit {
+	height: 25px;
+	font-size: 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #aaaaaa;
+	font-family: "Microsoft Yahei";
+}
+QLineEdit:focus {
+	border-color: #c62f2f;
+}
+
+QDateTimeEdit {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #aaaaaa;
+	height: 25px;
+	font-size: 16px;
+	font-family: "Microsoft Yahei";
+}
+
+QComboBox {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #aaaaaa;
+	height: 25px;
+	font-size: 16px;
+	font-family: "Microsoft Yahei";
+}
+
+QPushButton {
+    color: #c62f2f;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #c62f2f;
+    font: 15px;
+    width: 75px;
+    height: 25px;
+	font-family: "Microsoft Yahei";
+}
+
+QPushButton:hover {
+	background-color: #efafaf;
+}
+
+QPushButton:pressed {
+	color: white;
+	background-color: #c62f2f;
+}

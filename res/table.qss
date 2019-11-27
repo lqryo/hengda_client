@@ -1,0 +1,30 @@
+QTableWidget QHeaderView 
+{
+	font-size: 16px;
+}
+
+QTableWidget QHeaderView::section
+{
+    color: #333333;
+    padding: 4px;
+    height: 24px;
+    border: 0px solid #567dbc;
+    border-left: 0px;
+    border-right: 0px;
+    background: #eeeeee;;
+	font-family: "Microsoft Yahei";
+}
+
+QTableWidget { 
+	color: #333333;
+	font-size: 15px;
+	font-family: "Microsoft Yahei";
+	border: 1px solid #aaaaaa;
+    alternate-background-color: #ffffff;
+    selection-background-color: #eeeeee;
+	selection-color: #333333;
+}  
+  
+QTableWidget::item:!alternate:!selected{  
+    background-color: #ffffff;
+} 

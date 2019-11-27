@@ -1,0 +1,10 @@
+{
+    "server-ip": "211.67.27.150",
+    "server-port": 8892,
+    "mysql":{
+        "port":3306,
+        "username":"root",
+        "password":"960215",
+        "database":"hengda"
+    }
+}

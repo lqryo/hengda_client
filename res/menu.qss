@@ -1,0 +1,9 @@
+QWidget#EditMenu {
+    background-color: white;
+    border: 1px solid #2080F0;
+}
+
+/*///////////////////////////////////////////////////////////////*/
+QTextEdit#text_area {
+    background-color: rgba(0, 0, 0, 1);
+}
