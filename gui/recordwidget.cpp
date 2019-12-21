@@ -3,13 +3,46 @@
 #include "tcpclient.h"
 #include "alarmwindow.h"
 
+#define recordResponseMapping(port)	\
+TcpClient##port::instance().responseMapping("/camera/alarm", [this](nlohmann::json data) {	\
+qDebug() << "in responseMapping /camera/alarm callbackfunction";	\
+Alarm alarm(data);	\
+if (!AlarmService::insert(alarm)) {	\
+	qDebug() << "插入报警失败";	\
+}	\
+AlarmWindow *alarm_window = new AlarmWindow();	\
+alarm_window->setAlarm(alarm);	\
+alarm_window->show();	\
+query();	\
+});
+
+
 RecordWidget::RecordWidget(QWidget * parent)
 	: QWidget(parent) 
 {
+	qDebug() << "in recordwidget cons222";
 	init_ui();
 
 	// 报警回调函数
-	TcpClient::instance().responseMapping("/camera/alarm", [this](nlohmann::json data) {
+	recordResponseMapping(1)
+	recordResponseMapping(2)
+	recordResponseMapping(3)
+	recordResponseMapping(4)
+	recordResponseMapping(5)
+	recordResponseMapping(6)
+	recordResponseMapping(7)
+	recordResponseMapping(8)
+	recordResponseMapping(9)
+	recordResponseMapping(10)
+	recordResponseMapping(11)
+	recordResponseMapping(12)
+	recordResponseMapping(13)
+	recordResponseMapping(14)
+	recordResponseMapping(15)
+
+/*
+	TcpClient1::instance().responseMapping("/camera/alarm", [this](nlohmann::json data) {
+		qDebug() << "in responseMapping /camera/alarm callbackfunction";
 		Alarm alarm(data);
 		if (!AlarmService::insert(alarm)) {
 			qDebug() << "插入报警失败";
@@ -21,7 +54,7 @@ RecordWidget::RecordWidget(QWidget * parent)
 
 		query();
 	});
-
+*/
 	current_page_ = 1;
 	max_page_ = (AlarmService::count() + page_size_ - 1) / page_size_;
 	max_page_w_->setText("/ " + QString::number(max_page_));

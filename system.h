@@ -8,6 +8,19 @@
 #include <vector>
 #include "camera.h"
 
+class CameraInfo {
+public:
+	CameraInfo() = default;
+	CameraInfo(QString cameraName_, QString cameraPwd_, QString username_, QString channum_, QString codestream_,int filmtime_) :
+		cameraName(cameraName_), cameraPwd(cameraPwd_), username(username_), channum(channum_), codestream(codestream_),filmtime(filmtime_) {}
+	QString cameraName;
+	QString cameraPwd;
+	QString username;
+	QString channum;
+	QString codestream;
+	int filmtime;
+};
+
 class System {
 public:
     static System& instance()
@@ -18,11 +31,16 @@ public:
     System(const System&) = delete;
 
 	std::map<std::string, Device> devices() const { return devices_; }
+	std::map<std::string, CameraInfo> cameras() const { return cameras_;}
 	void addDevice(const Device& device) {
 		devices_[device.name()] = device;
 	}
 
-	QString server_ip_ = "192.168.2.111";
+	void addCamera(const CameraInfo& camerainfo) {
+		cameras_[camerainfo.cameraName.toStdString()] = camerainfo;
+	}
+
+	QString server_ip_ = "10.13.2.230";
 	int server_port_ = 8893;
 
 	struct 
@@ -32,6 +50,8 @@ public:
 		std::string database_ = "";
 		unsigned int port_ = 3306;
 	} mysql_;
+
+
 
 private:
 	System() 
@@ -67,6 +87,7 @@ private:
 	}
 
 	std::map<std::string, Device> devices_;
+	std::map<std::string, CameraInfo> cameras_;
 };
 
 #endif //BORDER_SYSTEM_H

@@ -5,7 +5,7 @@ using JSON = nlohmann::json;
 
 void DeviceWidget::refresh()
 {
-	auto socket = &TcpClient::instance();
+	auto socket = &TcpClient1::instance();
 	socket->request("/device/list", "json", "", [this](nlohmann::json data) {
 		if (!data.is_array()) return;
 

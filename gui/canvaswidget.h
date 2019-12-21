@@ -93,7 +93,7 @@ public slots:
     void save() 
 	{ 
 		auto str = BordersLoader::Instance().save(undo_stacks_);
-		TcpClient::instance().response("/camera/borders", str);
+		TcpClient1::instance().response("/camera/borders", str);
 	}
 
 protected:

@@ -20,10 +20,12 @@ public:
 		//json_get(alarm, "time", time_);
 		time_ = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toStdString();
 		json_get(alarm, "path", path_);
+		json_get(alarm, "port", port_);
 	}
 
 	int id_ = -1;
 	std::string ip_;
+	int port_;
 	int type_;
 	std::string time_;
 	std::string path_;

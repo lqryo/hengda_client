@@ -8,7 +8,7 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8")
 endif(MSVC) 
 
-################################################################
+################################################################  
 ## OpenCV
 #find_package(OpenCV REQUIRED) 
 #include_directories(${OpenCV_INCLUDE_DIRS})

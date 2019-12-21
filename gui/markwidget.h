@@ -45,9 +45,9 @@ public:
             cam_cbox_ = new QComboBox();
             cam_cbox_->setFixedWidth(300);
 			
-		//	cam_cbox_->addItem("1");
-		//	cam_cbox_->addItem("2");
-		//	cam_cbox_->addItem("3");
+//			cam_cbox_->addItem("1");
+//			cam_cbox_->addItem("2");
+//			cam_cbox_->addItem("3");
 
             menubar->addWidget(cam_cbox_);
             layout->addLayout(menubar);

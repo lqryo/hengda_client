@@ -75,7 +75,7 @@ public:
             table_->setColumnWidth(0, 300);
         }
 
-		refresh();
+//		refresh();
     }
 
 
