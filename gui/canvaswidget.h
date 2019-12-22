@@ -11,6 +11,9 @@
 #include "bordersloader.h"
 #include "json.hpp"
 #include "tcpclient.h"
+//#include "markwidget.h"
+
+extern int g_port;
 
 #define DEFINE_PAINTING_STATES(X) START_PAINTING_##X    = START_PAINTING | X,   PAINTING_##X    = PAINTING | X
 
@@ -93,7 +96,54 @@ public slots:
     void save() 
 	{ 
 		auto str = BordersLoader::Instance().save(undo_stacks_);
-		TcpClient1::instance().response("/camera/borders", str);
+		int port = g_port;
+		qDebug() << "in canvaswidget, port is " << port;
+		if(port == 0){
+			TcpClient1::instance().response("/camera/borders", str);
+		}
+		else if (port == 1) {
+			TcpClient2::instance().response("/camera/borders", str);
+		}
+		else if (port == 2) {
+			TcpClient3::instance().response("/camera/borders", str);
+		}
+		else if (port == 3) {
+			TcpClient4::instance().response("/camera/borders", str);
+		}
+		else if (port == 4) {
+			TcpClient5::instance().response("/camera/borders", str);
+		}
+		else if (port == 5) {
+			TcpClient6::instance().response("/camera/borders", str);
+		}
+		else if (port == 6) {
+			TcpClient7::instance().response("/camera/borders", str);
+		}
+		else if (port == 7) {
+			TcpClient8::instance().response("/camera/borders", str);
+		}
+		else if (port == 8) {
+			TcpClient9::instance().response("/camera/borders", str);
+		}
+		else if (port == 9) {
+			TcpClient10::instance().response("/camera/borders", str);
+		}
+		else if (port == 10) {
+			TcpClient11::instance().response("/camera/borders", str);
+		}
+		else if (port == 11) {
+			TcpClient12::instance().response("/camera/borders", str);
+		}
+		else if (port == 12) {
+			TcpClient13::instance().response("/camera/borders", str);
+		}
+		else if (port == 13) {
+			TcpClient14::instance().response("/camera/borders", str);
+		}
+		else if (port == 14) {
+			TcpClient15::instance().response("/camera/borders", str);
+		}
+		
 	}
 
 protected:

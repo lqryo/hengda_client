@@ -16,6 +16,8 @@
 #include "tcpclient.h"
 #include "json.hpp"
 
+extern int g_port;
+
 class MarkWidget : public QWidget {
     Q_OBJECT
 
@@ -94,7 +96,7 @@ public:
 		cam_cbox_->setDuplicatesEnabled(true);
     }
 
-    static QComboBox * cam_cbox_;
+    static QComboBox* cam_cbox_;
 
 public slots:
     void showFrameOfCamera(QString idx);

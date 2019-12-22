@@ -96,7 +96,7 @@ public:
 
 			_layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
 			select = new QPushButton("选择视频");
-			auto apply = new QPushButton("连接相机");
+			auto apply = new QPushButton("获取视频");
 
 			openCamera = new QPushButton("选择相机");
 			closeCamera = new QPushButton("关闭相机");
@@ -113,8 +113,8 @@ public:
 
 			_layout->addWidget(openCamera);
 			_layout->addWidget(closeCamera);
-			_layout->addWidget(select);
 			_layout->addWidget(apply);
+			_layout->addWidget(select);
 //			_layout->addWidget(connection);
 			
 		}
@@ -142,7 +142,7 @@ private:
 	void applyclick()
 	{
 		
-/*
+
 		nlohmann::json data;
 
 		// 发送视频请求
@@ -154,7 +154,7 @@ private:
 	//	QMessageBox::information(this, tr("info"), tr("iteration end"), QMessageBox::Ok);
 		select->setDisabled(false);
 		
-*/
+
 
 		
 /*
@@ -164,7 +164,83 @@ private:
 		
 		task->start();
 		port_off++;
-*/
+
+
+/*
+		count++;
+		if (count == 1) {
+			TcpClient1::instance().connect(8893 + 0);
+		}
+		else if (count == 2) {
+			TcpClient2::instance().connect(8893 + 1);
+		}
+		else if (count == 3) {
+			TcpClient3::instance().connect(8893 + 2);
+		}
+		else if (count == 4) {
+			TcpClient4::instance().connect(8893 + 3);
+		}
+		else if (count == 5) {
+			TcpClient5::instance().connect(8893 + 4);
+		}
+		else if (count == 6) {
+			TcpClient6::instance().connect(8893 + 5);
+		}
+		else if (count == 7) {
+			TcpClient7::instance().connect(8893 + 6);
+		}
+		else if (count == 8) {
+			TcpClient8::instance().connect(8893 + 7);
+		}
+		else if (count == 9) {
+			TcpClient9::instance().connect(8893 + 8);
+		}
+		else if (count == 10) {
+			TcpClient10::instance().connect(8893 + 9);
+		}
+		else if (count == 11) {
+			TcpClient11::instance().connect(8893 + 10);
+		}
+		else if (count == 12) {
+			TcpClient12::instance().connect(8893 + 11);
+		}
+		else if (count == 13) {
+			TcpClient13::instance().connect(8893 + 12);
+		}
+		else if (count == 14) {
+			TcpClient14::instance().connect(8893 + 13);
+		}
+		else if (count == 15) {
+			TcpClient15::instance().connect(8893 + 14);
+		}
+
+	*/
+		
+
+	}
+
+	void Open()
+	{
+		int i = CameraList->currentRow();
+		if (i == -1) { return; }
+		qDebug() << CameraList->item(i)->text();
+		nlohmann::json data;
+		QString data_str = CameraList->item(i)->text();
+		CameraInfo camerainfo = System::instance().cameras()[data_str.toStdString()];
+		QString url;
+
+		url = "rtsp://" + camerainfo.username + ":" + camerainfo.cameraPwd + "@" + camerainfo.cameraName
+			+ ":554/h264/" + camerainfo.channum + "/" + camerainfo.codestream + "/av_stream";
+		qDebug() << url;
+
+		ip2port[camerainfo.cameraName.toStdString()] = count;
+		port2ip[count] = camerainfo.cameraName.toStdString();
+
+		data["type"] = "opencamera";
+//		data["data"] = data_str.toStdString();
+		data["data"] = url.toStdString();
+		data["ip"] = data_str.toStdString();
+		MainTcpClient::instance().request("", data);
 
 
 		count++;
@@ -213,81 +289,8 @@ private:
 		else if (count == 15) {
 			TcpClient15::instance().connect(8893 + 14);
 		}
+
 		
-
-	}
-
-	void Open()
-	{
-		int i = CameraList->currentRow();
-		if (i == -1) { return; }
-		qDebug() << CameraList->item(i)->text();
-		nlohmann::json data;
-		QString data_str = CameraList->item(i)->text();
-		CameraInfo camerainfo = System::instance().cameras()[data_str.toStdString()];
-		QString url;
-
-		url = "rtsp://" + camerainfo.username + ":" + camerainfo.cameraPwd + "@" + camerainfo.cameraName
-			+ ":554/h264/" + camerainfo.channum + "/" + camerainfo.codestream + "/av_stream";
-		qDebug() << url;
-
-		ip2port[camerainfo.cameraName.toStdString()] = count;
-		port2ip[count] = camerainfo.cameraName.toStdString();
-
-		data["type"] = "opencamera";
-//		data["data"] = data_str.toStdString();
-		data["data"] = url.toStdString();
-		MainTcpClient::instance().request("", data);
-
-/*
-		count++;
-		if (count == 1) {
-			TcpClient1::instance().connect(8893 + 0);
-		}
-		else if (count == 2) {
-			TcpClient1::instance().connect(8893 + 1);
-		}
-		else if (count == 3) {
-			TcpClient1::instance().connect(8893 + 2);
-		}
-		else if (count == 4) {
-			TcpClient1::instance().connect(8893 + 3);
-		}
-		else if (count == 5) {
-			TcpClient1::instance().connect(8893 + 4);
-		}
-		else if (count == 6) {
-			TcpClient1::instance().connect(8893 + 5);
-		}
-		else if (count == 7) {
-			TcpClient1::instance().connect(8893 + 6);
-		}
-		else if (count == 8) {
-			TcpClient1::instance().connect(8893 + 7);
-		}
-		else if (count == 9) {
-			TcpClient1::instance().connect(8893 + 8);
-		}
-		else if (count == 10) {
-			TcpClient1::instance().connect(8893 + 9);
-		}
-		else if (count == 11) {
-			TcpClient1::instance().connect(8893 + 10);
-		}
-		else if (count == 12) {
-			TcpClient1::instance().connect(8893 + 11);
-		}
-		else if (count == 13) {
-			TcpClient1::instance().connect(8893 + 12);
-		}
-		else if (count == 14) {
-			TcpClient1::instance().connect(8893 + 13);
-		}
-		else if (count == 15) {
-			TcpClient1::instance().connect(8893 + 14);
-		}
-
-		*/
 
 	}
 

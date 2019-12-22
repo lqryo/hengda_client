@@ -33,6 +33,7 @@ void MarkWidget::showFrameOfCamera(QString idx)
 //	params["ip"] = device.name();
 	params["port"] = VideotestWidget::ip2port[device.name()];
 	int port = VideotestWidget::ip2port[device.name()];
+	g_port = port;
 	qDebug() << "In showFrameOfCamera";
 	qDebug() << "port is " << port;
 	if (port == 0) {

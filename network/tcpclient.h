@@ -80,7 +80,6 @@ public:	\
 	class_name& operator=(const class_name&) = delete;	\
 	void responseMapping(const std::string& path, std::function<void(nlohmann::json)> callback) \
 	{	\
-		std::cout << "in responseMapping " << path << std::endl;	\
 		mapping_table_[path] = callback;	\
 	}	\
 public slots:	\

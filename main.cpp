@@ -8,6 +8,7 @@
 
 QListWidget* VideotestWidget::videoList = nullptr;
 QComboBox* MarkWidget::cam_cbox_ = nullptr;
+int g_port = 0;
 QListWidget* VideotestWidget::CameraList = nullptr;
 std::map<std::string, int> VideotestWidget::ip2port;
 std::map<int, std::string> VideotestWidget::port2ip;
