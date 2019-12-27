@@ -25,6 +25,7 @@ RecordWidget::RecordWidget(QWidget * parent)
 
 	// 报警回调函数
 	recordResponseMapping(1)
+/*
 	recordResponseMapping(2)
 	recordResponseMapping(3)
 	recordResponseMapping(4)
@@ -39,6 +40,7 @@ RecordWidget::RecordWidget(QWidget * parent)
 	recordResponseMapping(13)
 	recordResponseMapping(14)
 	recordResponseMapping(15)
+*/
 
 /*
 	TcpClient1::instance().responseMapping("/camera/alarm", [this](nlohmann::json data) {

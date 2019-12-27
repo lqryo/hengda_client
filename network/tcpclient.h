@@ -132,7 +132,6 @@ public slots:	\
 	void connect(int port)	\
 	{	\
 		if (is_connected_) return;	\
-		socket_->abort();	\
 		socket_->connectToHost(System::instance().server_ip_, port);	\
 		qDebug() << "connect222";	\
 		qDebug() << socket_->state();	\

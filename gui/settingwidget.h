@@ -19,28 +19,28 @@
 
 
 class SettingWidget : public QWidget {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit SettingWidget(QWidget *parent = nullptr)
-        : QWidget(parent) {
-        auto layout = new QVBoxLayout();
-        setLayout(layout);
+	explicit SettingWidget(QWidget *parent = nullptr)
+		: QWidget(parent) {
+		auto layout = new QVBoxLayout();
+		setLayout(layout);
 
-        auto autorun = new QCheckBox("开机启动");
-        layout->addWidget(autorun);
+		auto autorun = new QCheckBox("开机启动");
+		layout->addWidget(autorun);
 
-        {
-            auto _layout = new QHBoxLayout();
-            layout->addLayout(_layout);
+		{
+			auto _layout = new QHBoxLayout();
+			layout->addLayout(_layout);
 
-            auto label = new QLabel("服务器地址:");
-            _layout->addWidget(label);
+			auto label = new QLabel("服务器地址:");
+			_layout->addWidget(label);
 
-            serverip_ = new QLineEdit();
-			serverip_->setText(QString("192.168.2.111"));
-            _layout->addWidget(serverip_);
+			serverip_ = new QLineEdit();
+			serverip_->setText(QString("172.24.11.251"));
+			_layout->addWidget(serverip_);
 
-        }
+		}
 
 		{
 			auto _layout = new QHBoxLayout();
@@ -49,69 +49,73 @@ public:
 			auto label = new QLabel("摄像头ip");
 			_layout->addWidget(label);
 
-			cameraName_ = new QLineEdit("192.168.1.65");
+			cameraName_ = new QLineEdit("172.24.11.206");
 			_layout->addWidget(cameraName_);
 
-
-		}
-
-		{
-			auto _layout = new QHBoxLayout();
-			layout->addLayout(_layout);
-
-			auto label1 = new QLabel("用户名");
+			auto label1 = new QLabel("rtsp");
 			_layout->addWidget(label1);
-
-			username_ = new QLineEdit("admin");
+			username_ = new QLineEdit("rtsp://admin:admin123@172.24.11.206:554");
 			_layout->addWidget(username_);
 
-			auto label2 = new QLabel("密码");
-			_layout->addWidget(label2);
 
-			cameraPwd_ = new QLineEdit("IDM8779235101");
-			_layout->addWidget(cameraPwd_);
-			
-			auto label3 = new QLabel("通道号");
-			_layout->addWidget(label3);
+			{
+				auto _layout = new QHBoxLayout();
+				layout->addLayout(_layout);
 
-			channum_ = new QLineEdit("ch1");
-			_layout->addWidget(channum_);
+				auto label1 = new QLabel("用户名");
+				_layout->addWidget(label1);
 
-			auto label4 = new QLabel("主次码流");
-			_layout->addWidget(label4);
+				//username_ = new QLineEdit("admin");
+				//_layout->addWidget(username_);
 
-			codestream_ = new QLineEdit("main");
-			_layout->addWidget(codestream_);
+				auto label2 = new QLabel("密码");
+				_layout->addWidget(label2);
 
-			auto label5 = new QLabel("录像时长（s）");
-			_layout->addWidget(label5);
+				cameraPwd_ = new QLineEdit("IDM8779235101");
+				_layout->addWidget(cameraPwd_);
 
-			film_ = new QLineEdit("0");
-			_layout->addWidget(film_);
+				auto label3 = new QLabel("通道号");
+				_layout->addWidget(label3);
+
+				channum_ = new QLineEdit("ch1");
+				_layout->addWidget(channum_);
+
+				auto label4 = new QLabel("主次码流");
+				_layout->addWidget(label4);
+
+				codestream_ = new QLineEdit("main");
+				_layout->addWidget(codestream_);
+
+				auto label5 = new QLabel("录像时长（s）");
+				_layout->addWidget(label5);
+
+				film_ = new QLineEdit("0");
+				_layout->addWidget(film_);
+
+			}
+
+			layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+
+			{
+				auto _layout = new QHBoxLayout();
+				layout->addLayout(_layout);
+
+				_layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+				//            auto reset = new QPushButton("重置");
+				applyBtn_ = new QPushButton("连接服务器");
+				addBtn_ = new QPushButton("添加摄像头");
+
+				_layout->addWidget(addBtn_);
+				_layout->addWidget(applyBtn_);
+				//            _layout->addWidget(reset);
+
+			}
+
+			connect(addBtn_, &QPushButton::clicked, this, &SettingWidget::addCamera);
+			connect(applyBtn_, &QPushButton::clicked, this, &SettingWidget::addIP);
 
 		}
-
-        layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
-
-        {
-            auto _layout = new QHBoxLayout();
-            layout->addLayout(_layout);
-
-            _layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-//            auto reset = new QPushButton("重置");
-            applyBtn_ = new QPushButton("连接服务器");
-			addBtn_ = new QPushButton("添加摄像头");
-
-			_layout->addWidget(addBtn_);
-            _layout->addWidget(applyBtn_);
-//            _layout->addWidget(reset);
-			
-        }
-
-		connect(addBtn_, &QPushButton::clicked, this, &SettingWidget::addCamera);
-		connect(applyBtn_, &QPushButton::clicked, this, &SettingWidget::addIP);
-
-    }
+	}
 private:
 	QLineEdit* serverip_;
 	QLineEdit* cameraName_;
@@ -142,9 +146,9 @@ private:
 				QMessageBox::information(this, tr("提示"), tr("该相机已存在"), QMessageBox::Ok);
 			}
 			else {
-				Device device(name.toStdString(),pwd.toStdString());
+				Device device(name.toStdString(), pwd.toStdString());
 
-				CameraInfo camerainfo(name,pwd,user,channum,codestream,film.toInt());
+				CameraInfo camerainfo(name, pwd, user, channum, codestream, film.toInt());
 
 				System::instance().addDevice(device);
 				System::instance().addCamera(camerainfo);
@@ -168,7 +172,7 @@ private:
 		QString ip = serverip_->text();
 		System::instance().server_ip_ = ip;
 		MainTcpClient::instance().connect();
-//		TcpClient::instance().connect();
+		//		TcpClient::instance().connect();
 
 		QMessageBox::information(this, tr("提示"), tr("服务器连接成功"), QMessageBox::Ok);
 	}

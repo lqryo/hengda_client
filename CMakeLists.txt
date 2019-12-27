@@ -8,12 +8,12 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8")
 endif(MSVC) 
 
-################################################################  
+################################################################    
 ## OpenCV
 #find_package(OpenCV REQUIRED) 
 #include_directories(${OpenCV_INCLUDE_DIRS})
 
-################################################################ 
+################################################################    
 ## Qt 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -22,7 +22,7 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Network CONFIG REQUIRED)
 
-################################################################
+################################################################ 
 ## mysql
 find_package(MySQL REQUIRED)
 include_directories(${MySQL_INCLUDE_DIRS})
@@ -39,7 +39,7 @@ include_directories(gui/widgets)
 file(GLOB_RECURSE MODEL_FILES ./model/*.h ./model/*.cpp) 
 include_directories(model)
 
-file(GLOB_RECURSE DB_FILES ./db/*.h  ./db/*.cpp) 
+file(GLOB_RECURSE DB_FILES ./db/*.h  ./db/*.cpp)  
 include_directories(db)
 
 file(GLOB_RECURSE NETWORK_FILES ./network/*.h ./network/*.cpp) 

@@ -100,6 +100,7 @@ public:
 
 			openCamera = new QPushButton("选择相机");
 			closeCamera = new QPushButton("关闭相机");
+			connectCamera = new QPushButton("连接相机");
 
 //			auto connection = new QPushButton("连接");
 
@@ -110,12 +111,13 @@ public:
 			connect(select, &QPushButton::clicked, this, &VideotestWidget::selection);
 			connect(openCamera, &QPushButton::clicked, this, &VideotestWidget::Open);
 			connect(closeCamera, &QPushButton::clicked, this, &VideotestWidget::Close);
+			connect(connectCamera, &QPushButton::clicked, this, &VideotestWidget::link);
 
 			_layout->addWidget(openCamera);
-			_layout->addWidget(closeCamera);
+//			_layout->addWidget(closeCamera);
+//			_layout->addWidget(connectCamera);
 			_layout->addWidget(apply);
 			_layout->addWidget(select);
-//			_layout->addWidget(connection);
 			
 		}
 
@@ -219,30 +221,8 @@ private:
 
 	}
 
-	void Open()
+	void link()
 	{
-		int i = CameraList->currentRow();
-		if (i == -1) { return; }
-		qDebug() << CameraList->item(i)->text();
-		nlohmann::json data;
-		QString data_str = CameraList->item(i)->text();
-		CameraInfo camerainfo = System::instance().cameras()[data_str.toStdString()];
-		QString url;
-
-		url = "rtsp://" + camerainfo.username + ":" + camerainfo.cameraPwd + "@" + camerainfo.cameraName
-			+ ":554/h264/" + camerainfo.channum + "/" + camerainfo.codestream + "/av_stream";
-		qDebug() << url;
-
-		ip2port[camerainfo.cameraName.toStdString()] = count;
-		port2ip[count] = camerainfo.cameraName.toStdString();
-
-		data["type"] = "opencamera";
-//		data["data"] = data_str.toStdString();
-		data["data"] = url.toStdString();
-		data["ip"] = data_str.toStdString();
-		MainTcpClient::instance().request("", data);
-
-
 		count++;
 		if (count == 1) {
 			TcpClient1::instance().connect(8893 + 0);
@@ -289,7 +269,85 @@ private:
 		else if (count == 15) {
 			TcpClient15::instance().connect(8893 + 14);
 		}
+		qDebug() << "port is " << count;
+	}
 
+	void Open()
+	{
+		int i = CameraList->currentRow();
+		if (i == -1) { return; }
+		qDebug() << CameraList->item(i)->text();
+		nlohmann::json data;
+		QString data_str = CameraList->item(i)->text();
+		CameraInfo camerainfo = System::instance().cameras()[data_str.toStdString()];
+		QString url;
+
+		url = "rtsp://" + camerainfo.username + ":" + camerainfo.cameraPwd + "@" + camerainfo.cameraName
+			+ ":554/h264/" + camerainfo.channum + "/" + camerainfo.codestream + "/av_stream";
+
+
+	//	url = "rtsp://admin:admin123@172.24.11.206:554";
+		url = camerainfo.username;
+		qDebug() << url;
+
+		ip2port[camerainfo.cameraName.toStdString()] = count;
+		port2ip[count] = camerainfo.cameraName.toStdString();
+
+		data["type"] = "opencamera";
+//		data["data"] = data_str.toStdString();
+		data["data"] = url.toStdString();
+		data["ip"] = data_str.toStdString();
+		MainTcpClient::instance().request("", data);
+
+
+		count++;
+		if (count == 1) {
+			TcpClient1::instance().connect(8893 + 0);
+		}
+		/*
+		else if (count == 2) {
+			TcpClient2::instance().connect(8893 + 1);
+		}
+		else if (count == 3) {
+			TcpClient3::instance().connect(8893 + 2);
+		}
+		else if (count == 4) {
+			TcpClient4::instance().connect(8893 + 3);
+		}
+		else if (count == 5) {
+			TcpClient5::instance().connect(8893 + 4);
+		}
+		else if (count == 6) {
+			TcpClient6::instance().connect(8893 + 5);
+		}
+		else if (count == 7) {
+			TcpClient7::instance().connect(8893 + 6);
+		}
+		else if (count == 8) {
+			TcpClient8::instance().connect(8893 + 7);
+		}
+		else if (count == 9) {
+			TcpClient9::instance().connect(8893 + 8);
+		}
+		else if (count == 10) {
+			TcpClient10::instance().connect(8893 + 9);
+		}
+		else if (count == 11) {
+			TcpClient11::instance().connect(8893 + 10);
+		}
+		else if (count == 12) {
+			TcpClient12::instance().connect(8893 + 11);
+		}
+		else if (count == 13) {
+			TcpClient13::instance().connect(8893 + 12);
+		}
+		else if (count == 14) {
+			TcpClient14::instance().connect(8893 + 13);
+		}
+		else if (count == 15) {
+			TcpClient15::instance().connect(8893 + 14);
+		}
+		*/
 		
 
 	}
@@ -323,6 +381,7 @@ private:
 	QPushButton* select;
 	QPushButton* openCamera;
 	QPushButton* closeCamera;
+	QPushButton* connectCamera;
 public:
 	void showvideo(nlohmann::json j)
 	{

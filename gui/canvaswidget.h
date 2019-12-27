@@ -98,6 +98,8 @@ public slots:
 		auto str = BordersLoader::Instance().save(undo_stacks_);
 		int port = g_port;
 		qDebug() << "in canvaswidget, port is " << port;
+		TcpClient1::instance().response("/camera/borders", str);
+		/*
 		if(port == 0){
 			TcpClient1::instance().response("/camera/borders", str);
 		}
@@ -143,6 +145,7 @@ public slots:
 		else if (port == 14) {
 			TcpClient15::instance().response("/camera/borders", str);
 		}
+		*/
 		
 	}
 

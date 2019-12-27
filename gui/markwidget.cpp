@@ -14,8 +14,10 @@ void MarkWidget::showEvent(QShowEvent *event)
 
 #define markrequest(port) \
 TcpClient##port::instance().request("/device/frame", params, [this, device](std::string data) {	\
+qDebug() << "data.size() is "<< data.size();	\
 qDebug() << "/device/frame";	\
 auto xx = QImage::fromData(reinterpret_cast<const uchar *>(data.c_str()), data.size());	\
+qDebug() <<xx.size();	\
 QPixmap pixmap = QPixmap::fromImage(xx);	\
 canvas_->setPixmap(pixmap);	\
 canvas_->setKey(cam_cbox_->currentText().toStdString());	\
@@ -36,6 +38,9 @@ void MarkWidget::showFrameOfCamera(QString idx)
 	g_port = port;
 	qDebug() << "In showFrameOfCamera";
 	qDebug() << "port is " << port;
+	qDebug() << "port is " << VideotestWidget::ip2port[device.name()];
+	markrequest(1);
+	/*
 	if (port == 0) {
 		markrequest(1)
 	}
@@ -81,6 +86,7 @@ void MarkWidget::showFrameOfCamera(QString idx)
 	else if (port == 14) {
 		markrequest(15)
 	}
+	*/
 
 /*
 	TcpClient1::instance().request("/device/frame", params, [this, device](std::string data) {

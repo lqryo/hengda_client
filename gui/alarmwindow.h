@@ -11,6 +11,7 @@
 #include <QPixmap>
 #include "alarm.h"
 #include "tcpclient.h"
+#include "videotest.h"
 
 class AlarmWindow : public QWidget {
 	Q_OBJECT
@@ -43,13 +44,18 @@ TcpClient##port::instance().request("/camera/alarm/image", params, [this](std::s
 
 	void setAlarm(const Alarm& alarm)
 	{
+		int port = alarm.port_;
+		std::string ip = VideotestWidget::port2ip[port];
+
 		qDebug() << "in SetAlarm";
-		std::string text = alarm.ip_ + " 于 " + alarm.time_ + " 发生 " + (alarm.type_ == 1 ? "越界" : "入侵");
+		std::string text = ip + " 于 " + alarm.time_ + " 发生 " + (alarm.type_ == 1 ? "越界" : "入侵");
 		text_->setText(text.c_str());
 
 		nlohmann::json params;
 		params["path"] = alarm.path_;
-		int port = alarm.port_;
+//		int port = alarm.port_;
+		alarmrequest(1);
+		/*
 		if (port == 0) {
 			alarmrequest(1)
 		}
@@ -95,6 +101,7 @@ TcpClient##port::instance().request("/camera/alarm/image", params, [this](std::s
 		else if (port == 14) {
 			alarmrequest(15)
 		}
+		*/
 
 /*
 		TcpClient1::instance().request("/camera/alarm/image", params, [this](std::string data) {
