@@ -16,3 +16,14 @@ C:\Program Files\MySQL\MySQL Server 8.0
 
 ## Visual Studio 2015/2017
 代码使用`utf-8`编码，其他编码格式无法通过编译，请在`VS`中安装`ForceUTF8(NO BOM)`插件。
+
+## RPC
+
+下载[co库](https://github.com/idealvin/co)，使用`xmake`交叉编译
+```sh
+$ cd co
+$ xmake f -p linux --sdk=${DDDK_HOME}toolchains/Euler_compile_env_cross/arm/cross_compile/install
+$ xmake
+```
+
+
