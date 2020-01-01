@@ -16,6 +16,14 @@
 #include "system.h"
 #include "markwidget.h"
 #include "videotest.h"
+#include "base/rpc.h"
+#include "base/co.h"
+#include "base/json.h"
+#include "base/time.h"
+#include "base/log.h"
+#include "base/flag.h"
+
+extern std::string g_serverip;
 
 
 class SettingWidget : public QWidget {
@@ -37,7 +45,7 @@ public:
 			_layout->addWidget(label);
 
 			serverip_ = new QLineEdit();
-			serverip_->setText(QString("172.24.11.251"));
+			serverip_->setText(QString("192.168.2.111"));
 			_layout->addWidget(serverip_);
 
 		}
@@ -49,18 +57,18 @@ public:
 			auto label = new QLabel("摄像头ip");
 			_layout->addWidget(label);
 
-			cameraName_ = new QLineEdit("172.24.11.206");
+			cameraName_ = new QLineEdit("192.168.1.65");
 			_layout->addWidget(cameraName_);
 
 			auto label1 = new QLabel("rtsp");
 			_layout->addWidget(label1);
-			username_ = new QLineEdit("rtsp://admin:admin123@172.24.11.206:554");
+			username_ = new QLineEdit("rtsp://admin:IDM8779235101@192.168.1.65:554/h265/ch1/main/av_stream");
 			_layout->addWidget(username_);
 
-
+			
 			{
 				auto _layout = new QHBoxLayout();
-				layout->addLayout(_layout);
+			//	layout->addLayout(_layout);
 
 				auto label1 = new QLabel("用户名");
 				_layout->addWidget(label1);
@@ -93,6 +101,7 @@ public:
 				_layout->addWidget(film_);
 
 			}
+			
 
 			layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 
@@ -116,6 +125,7 @@ public:
 
 		}
 	}
+
 private:
 	QLineEdit* serverip_;
 	QLineEdit* cameraName_;
@@ -171,12 +181,51 @@ private:
 	{
 		QString ip = serverip_->text();
 		System::instance().server_ip_ = ip;
-		MainTcpClient::instance().connect();
-		//		TcpClient::instance().connect();
+		Json x = json::object();
+		x.add_member("ip", "1.1.1.1");
+
+	//	client = rpc::new_client(ip.toStdString().c_str(), 9910, "");
+		go(&SettingWidget::client_fun,this);
+
 
 		QMessageBox::information(this, tr("提示"), tr("服务器连接成功"), QMessageBox::Ok);
 	}
-};
+
+	void client_fun() {
+		LOG << "in client fun";
+		QString camera_ip = cameraName_->text();
+		QString server_ip = serverip_->text();
+		g_serverip = server_ip.toStdString();
+
+		std::cout << "ip is " << server_ip.toStdString() << std::endl;
+		std::string ip = server_ip.toStdString();
+
+
+		rpc::Client* c = rpc::new_client(ip.c_str(), 9910, "");
+		Json req, res;
+		req.add_member("req_id", now::ms());
+		req.add_member("method", "set_egbd_task");
+		Json params = json::object();
+		{
+			params.add_member("ip", camera_ip.toStdString().c_str());
+			params.add_member("port", 9910);
+			std::string url = username_->text().toStdString();
+			std::cout << url << std::endl;
+			params.add_member("rtsp_url", url.c_str());
+			params.add_member("type", 1);
+		}
+		req.add_member("params", params);
+		std::cout << req.pretty() << std::endl;
+		c->call(req, res);
+		std::cout << res.pretty() << std::endl;
+
+		delete c;
+	}
+
+
+
+//	rpc::Client* client;
+};// SettingWidget class
 
 
 #endif //BORDER_SETTINGWIDGET_H

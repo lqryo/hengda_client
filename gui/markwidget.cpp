@@ -1,6 +1,14 @@
 #include "markwidget.h"
 #include "system.h"
 #include "videotest.h"
+#include "base/co.h"
+#include "base/hash.h"
+#include "base/fastring.h"
+
+extern std::string g_cameraip;
+
+extern std::string g_server_ip;
+extern std::string g_serverip;
 
 void MarkWidget::showEvent(QShowEvent *event)
 {
@@ -29,72 +37,48 @@ void MarkWidget::showFrameOfCamera(QString idx)
     auto devices = System::instance().devices();
 	if (devices.empty()) return;
 
-    auto device = devices[idx.toStdString()];
+	auto device = devices[idx.toStdString()];
 
-	nlohmann::json params;
-//	params["ip"] = device.name();
-	params["port"] = VideotestWidget::ip2port[device.name()];
-	int port = VideotestWidget::ip2port[device.name()];
-	g_port = port;
-	qDebug() << "In showFrameOfCamera";
-	qDebug() << "port is " << port;
-	qDebug() << "port is " << VideotestWidget::ip2port[device.name()];
-	markrequest(1);
-	/*
-	if (port == 0) {
-		markrequest(1)
-	}
-	else if (port == 1) {
-		markrequest(2)
-	}
-	else if (port == 2) {
-		markrequest(3)
-	}
-	else if (port == 3) {
-		markrequest(4)
-	}
-	else if (port == 4) {
-		markrequest(5)
-	}
-	else if (port == 5) {
-		markrequest(6)
-	}
-	else if (port == 6) {
-		markrequest(7)
-	}
-	else if (port == 7) {
-		markrequest(8)
-	}
-	else if (port == 8) {
-		markrequest(9)
-	}
-	else if (port == 9) {
-		markrequest(10)
-	}
-	else if (port == 10) {
-		markrequest(11)
-	}
-	else if (port == 11) {
-		markrequest(12)
-	}
-	else if (port == 12) {
-		markrequest(13)
-	}
-	else if (port == 13) {
-		markrequest(14)
-	}
-	else if (port == 14) {
-		markrequest(15)
-	}
-	*/
+	ip_ = device.name();
+	g_cameraip = device.name();
+	go(&MarkWidget::client_fun, this);
 
-/*
-	TcpClient1::instance().request("/device/frame", params, [this, device](std::string data) {
-		qDebug() << "/device/frame";
-		auto xx = QImage::fromData(reinterpret_cast<const uchar *>(data.c_str()), data.size());
-		QPixmap pixmap = QPixmap::fromImage(xx);
-		canvas_->setPixmap(pixmap);
-		canvas_->setKey(cam_cbox_->currentText().toStdString());
-	});
-*/
+
+
+
+}
+
+void MarkWidget::client_fun()
+{
+	Json req, res;
+
+	req.add_member("req_id", now::ms());
+	req.add_member("method", "get_key_frame");
+
+	rpc::Client* c = rpc::new_client(g_serverip.c_str(), 9910, "");
+
+	Json params = json::object();
+	{
+		params.add_member("ip", ip_.c_str());
+		params.add_member("port", 9910);
+	}
+	req.add_member("params", params);
+	std::cout << req.pretty() << std::endl;
+	
+	c->call(req, res);
+
+	std::cout << res.pretty() << std::endl;
+
+	fastring data = base64_decode(res["data"].get_string());
+
+	auto xx = QImage::fromData(reinterpret_cast<const uchar *>(data.c_str()), data.size());	
+	qDebug() << xx.size();	
+	QPixmap pixmap = QPixmap::fromImage(xx);	
+	canvas_->setPixmap(pixmap);	
+	canvas_->setKey(cam_cbox_->currentText().toStdString());	
+
+
+
+
+	delete c;
 }

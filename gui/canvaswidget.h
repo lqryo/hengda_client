@@ -13,7 +13,17 @@
 #include "tcpclient.h"
 //#include "markwidget.h"
 
+#include "base/fs.h"
+#include "base/fastring.h"
+#include "base/json.h"
+#include "base/co.h"
+#include "base/rpc.h"
+
+#include "base/time.h"
+
 extern int g_port;
+extern std::string g_serverip;
+extern std::string g_cameraip;
 
 #define DEFINE_PAINTING_STATES(X) START_PAINTING_##X    = START_PAINTING | X,   PAINTING_##X    = PAINTING | X
 
@@ -95,57 +105,11 @@ public slots:
 
     void save() 
 	{ 
-		auto str = BordersLoader::Instance().save(undo_stacks_);
-		int port = g_port;
-		qDebug() << "in canvaswidget, port is " << port;
-		TcpClient1::instance().response("/camera/borders", str);
-		/*
-		if(port == 0){
-			TcpClient1::instance().response("/camera/borders", str);
-		}
-		else if (port == 1) {
-			TcpClient2::instance().response("/camera/borders", str);
-		}
-		else if (port == 2) {
-			TcpClient3::instance().response("/camera/borders", str);
-		}
-		else if (port == 3) {
-			TcpClient4::instance().response("/camera/borders", str);
-		}
-		else if (port == 4) {
-			TcpClient5::instance().response("/camera/borders", str);
-		}
-		else if (port == 5) {
-			TcpClient6::instance().response("/camera/borders", str);
-		}
-		else if (port == 6) {
-			TcpClient7::instance().response("/camera/borders", str);
-		}
-		else if (port == 7) {
-			TcpClient8::instance().response("/camera/borders", str);
-		}
-		else if (port == 8) {
-			TcpClient9::instance().response("/camera/borders", str);
-		}
-		else if (port == 9) {
-			TcpClient10::instance().response("/camera/borders", str);
-		}
-		else if (port == 10) {
-			TcpClient11::instance().response("/camera/borders", str);
-		}
-		else if (port == 11) {
-			TcpClient12::instance().response("/camera/borders", str);
-		}
-		else if (port == 12) {
-			TcpClient13::instance().response("/camera/borders", str);
-		}
-		else if (port == 13) {
-			TcpClient14::instance().response("/camera/borders", str);
-		}
-		else if (port == 14) {
-			TcpClient15::instance().response("/camera/borders", str);
-		}
-		*/
+		go(&CanvasWidget::client_fun, this);
+
+//		int port = g_port;
+//		qDebug() << "in canvaswidget, port is " << port;
+
 		
 	}
 
@@ -157,6 +121,52 @@ protected:
 	void resizeEvent(QResizeEvent *) override;
 
 private:
+	void client_fun()
+	{
+		auto borders = BordersLoader::Instance().save(undo_stacks_);
+		std::cout << borders.dump(4) << std::endl;
+		std::string info_str;
+
+
+		for (const auto& border : borders) {
+			auto key = border["ip"].get<std::string>();
+			std::cout << "camera ip is " << key << std::endl;
+
+			if (key == g_cameraip)
+			{
+				auto info = border["info"];
+				info_str = info.dump();
+				std::cout << info_str << std::endl;
+			}
+		}
+
+		Json req, res;
+
+		req.add_member("req_id", now::ms());
+		req.add_member("method", "set_border_info");
+
+		Json params = json::object();
+		{
+			params.add_member("ip", g_cameraip.c_str());
+			params.add_member("port", 9910);
+			Json info = json::array();
+			info.parse_from(info_str.c_str());
+			params.add_member("info", info);
+
+		}
+		req.add_member("params", params);
+
+//		rpc::Client* c = rpc::new_client("192.168.2.111", 9910, "");
+		std::cout << "server ip is " << g_serverip << std::endl;
+		rpc::Client* c = rpc::new_client(g_serverip.c_str(), 9910, "");
+		std::cout << req.pretty() << std::endl;
+		c->call(req, res);
+		std::cout << res.pretty() << std::endl;
+
+
+		delete c;
+	}
+
     QPainter painter_;
 
     shared_ptr<PaintCommand> command_ = nullptr;
@@ -171,6 +181,9 @@ private:
 
     QPixmap pixmap_;
     QSize parea_;
+
+	nlohmann::json data;
+
 };
 
 

@@ -1,14 +1,26 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(Border)
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}") 
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")   
  
 set(CMAKE_CXX_STANDARD 14)
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8")  
+	add_definitions(-DWIN32_LEAN_AND_MEAN)
+	# Use the static C library for all build types
+    foreach(var 
+        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO 
+      )
+      if(${var} MATCHES "/MD")
+        string(REGEX REPLACE "/MD" "/MT" ${var} "${${var}}")
+      endif()
+    endforeach()  
 endif(MSVC) 
 
-################################################################    
+################################################################     
 ## OpenCV
 #find_package(OpenCV REQUIRED) 
 #include_directories(${OpenCV_INCLUDE_DIRS})
@@ -22,12 +34,18 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Network CONFIG REQUIRED)
 
-################################################################ 
+################################################################  
 ## mysql
 find_package(MySQL REQUIRED)
 include_directories(${MySQL_INCLUDE_DIRS})
 
 ################################################################
+
+#################################################################
+## co
+include_directories("D:/develop/co/include")  
+
+#################################################################
 
 include_directories(3rdparty)
 
@@ -49,5 +67,7 @@ add_executable(${PROJECT_NAME} main.cpp ${GUI_FILES} ${MODEL_FILES} ${DB_FILES} 
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network)
 
 target_link_libraries(${PROJECT_NAME} ${MySQL_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} "D:/develop/co/lib/base.lib")
 
 file(COPY ${CMAKE_SOURCE_DIR}/setting.json DESTINATION ${CMAKE_BINARY_DIR}) 

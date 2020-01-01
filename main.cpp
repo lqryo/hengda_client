@@ -5,6 +5,15 @@
 #include "tcpclient2.h"
 #include "videotest.h"
 #include <functional>
+#include <iostream>
+#include "settingwidget.h"
+
+#include "base/rpc.h"
+#include "rpcclient.h"
+#include <fstream>
+
+
+Mutex mtx;
 
 QListWidget* VideotestWidget::videoList = nullptr;
 QComboBox* MarkWidget::cam_cbox_ = nullptr;
@@ -12,6 +21,14 @@ int g_port = 0;
 QListWidget* VideotestWidget::CameraList = nullptr;
 std::map<std::string, int> VideotestWidget::ip2port;
 std::map<int, std::string> VideotestWidget::port2ip;
+
+std::vector<AlarmWindow*> DeServImpl:: alarms;
+
+std::string g_serverip;
+std::string g_cameraip;
+
+std::string g_server_ip;
+std::string g_client_ip;
 
 void showvideo(nlohmann::json j)
 {
@@ -26,6 +43,8 @@ void showvideo(nlohmann::json j)
 
 int main(int argc, char* argv[])
 {
+	flag::init(argc, argv);
+	log::init();
 
     QApplication a(argc, argv);
 
@@ -41,12 +60,18 @@ int main(int argc, char* argv[])
 	std::function<void(nlohmann::json)> callback;
 	VideotestWidget videotest;
 	callback = showvideo;
-	MainTcpClient::instance().responseMapping("videotest", callback);
 
 
+//	rpc::Server* server = rpc::new_server("192.168.2.12", 9900, "");
+//	server->add_service(new DeServImpl);
+//	server->start();
 
     MainWindow window;
     window.show();
 
+	
+
     return a.exec();
+
+
 }

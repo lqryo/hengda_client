@@ -25,8 +25,8 @@ nlohmann::json BordersLoader::save(std::map<std::string, CommandStack> stacks)
 			stack_json.push_back(cmd_json);
 		}
 		borders_.push_back({
-			{ "name", key },
-			{ "value", stack_json }
+			{ "ip", key },
+			{ "info", stack_json }
 			});
 	}
 
@@ -68,10 +68,10 @@ std::map<std::string, CommandStack> BordersLoader::load()
 	//
 	for (const auto& stack_json : borders_) {
 
-		auto key = stack_json["name"].get<std::string>();
+		auto key = stack_json["ip"].get<std::string>();
 		stacks[key] = CommandStack();
 
-		auto stack_value_json = stack_json["value"];
+		auto stack_value_json = stack_json["info"];
 
 		for (const auto& border : stack_value_json) {
 			auto cmd = make_shared<PaintCommand>((Graph)(border["type"].get<unsigned int>()), QPen(Qt::green, 2));

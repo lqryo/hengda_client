@@ -14,7 +14,9 @@
 #include "imageeditmenu.h"
 #include "canvaswidget.h"
 #include "tcpclient.h"
-#include "json.hpp"
+#include "base/json.h"
+#include "base/time.h"
+#include "base/rpc.h"
 
 extern int g_port;
 
@@ -110,6 +112,10 @@ private:
 
     QPushButton * ok_btn_ = nullptr;
     QPushButton * cancel_btn_ = nullptr;
+
+	void client_fun();
+
+	std::string ip_;
 
 };
 

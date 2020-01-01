@@ -33,6 +33,8 @@ public:
 		layout->addWidget(image_);
 		image_->setFixedSize(960, 540);
 	}
+//	AlarmWindow(const AlarmWindow&) = default;
+//	AlarmWindow& operator=(const AlarmWindow&) = default;
 
 #define alarmrequest(port)	\
 TcpClient##port::instance().request("/camera/alarm/image", params, [this](std::string data) {	\
@@ -54,7 +56,7 @@ TcpClient##port::instance().request("/camera/alarm/image", params, [this](std::s
 		nlohmann::json params;
 		params["path"] = alarm.path_;
 //		int port = alarm.port_;
-		alarmrequest(1);
+//		alarmrequest(1);
 		/*
 		if (port == 0) {
 			alarmrequest(1)
@@ -113,7 +115,7 @@ TcpClient##port::instance().request("/camera/alarm/image", params, [this](std::s
 */
 	}
 
-private:
+public:
 	QLabel * text_;
 	QLabel * image_;
 };

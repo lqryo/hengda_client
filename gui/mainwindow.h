@@ -27,6 +27,7 @@ public:
 		addWidget(new IconTextButton(QPixmap(":/image/res/camera"), tr("测试"), true), new VideotestWidget());
 
 		menu_layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
 	}
 private:
 };
