@@ -13,7 +13,6 @@
 #include <QComboBox>
 #include "imageeditmenu.h"
 #include "canvaswidget.h"
-#include "tcpclient.h"
 #include "base/json.h"
 #include "base/time.h"
 #include "base/rpc.h"

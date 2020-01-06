@@ -10,7 +10,6 @@
 #include <QLabel>
 #include <QPixmap>
 #include "alarm.h"
-#include "tcpclient.h"
 #include "videotest.h"
 
 class AlarmWindow : public QWidget {

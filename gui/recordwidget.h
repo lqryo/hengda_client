@@ -33,8 +33,6 @@
 using namespace std;
 
 extern Mutex mtx;
-
-extern std::string g_server_ip;
 extern std::string g_client_ip;
 
 class RPCThread : public QThread 
@@ -55,14 +53,8 @@ public:
 		if (client_ip.is_string()) {
 			g_client_ip = client_ip.get_string();
 		}
-		Json server_ip = y.find("server_ip");
-		if (server_ip.is_string()) {
-			g_server_ip = server_ip.get_string();
-		}
 		f.close();
 		std::cout << "client ip is " << g_client_ip << std::endl;
-		std::cout << "server ip is " << g_server_ip << std::endl;
-
 	}
 
 	~RPCThread() = default;
@@ -71,6 +63,7 @@ protected:
 	void run()
 	{
 		rpc::Server* server = rpc::new_server(g_client_ip.c_str(), 9900, "");
+	//	rpc::Server* server = rpc::new_server("127.0.0.1", 9900, "");
 		server->add_service(new DeServImpl);
 		server->start();
 		while (!stop_) {
@@ -95,8 +88,11 @@ protected:
 	{
 		while (!stop_)
 		{
-			if (DeServImpl::alarms.size() > 0) {
-				emit hasAlarm();
+			{
+				MutexGuard g(mtx);
+				if (DeServImpl::alarms.size() > 0) {
+					emit hasAlarm();
+				}
 			}
 			sleep::sec(1);
 

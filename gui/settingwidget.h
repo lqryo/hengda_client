@@ -111,7 +111,7 @@ public:
 
 				_layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
 				//            auto reset = new QPushButton("重置");
-				applyBtn_ = new QPushButton("连接服务器");
+				applyBtn_ = new QPushButton("启动ipc");
 				addBtn_ = new QPushButton("添加摄像头");
 
 				_layout->addWidget(addBtn_);

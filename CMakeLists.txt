@@ -5,8 +5,9 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
  
 set(CMAKE_CXX_STANDARD 14)
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8")  
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8") 
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
+ 	add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES) 
 	# Use the static C library for all build types
     foreach(var 
         CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
@@ -20,12 +21,19 @@ if(MSVC)
     endforeach()  
 endif(MSVC) 
 
-################################################################     
+################################################################    
 ## OpenCV
 #find_package(OpenCV REQUIRED) 
 #include_directories(${OpenCV_INCLUDE_DIRS})
 
-################################################################    
+################################################################      
+## glog
+# find_package(Glog REQUIRED) 
+# set(GLOG_INCLUDE_DIRS "D:/develop/glog/Libs/include")
+# set(GLOG_LIBRARIES "D:/develop/glog/Libs/lib/glog.lib;D:/develop/glog/Libs/lib/glogd.lib")
+# include_directories(${GLOG_INCLUDE_DIRS})
+
+################################################################      
 ## Qt 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -39,7 +47,7 @@ find_package(Qt5 COMPONENTS Core Gui Widgets Network CONFIG REQUIRED)
 find_package(MySQL REQUIRED)
 include_directories(${MySQL_INCLUDE_DIRS})
 
-################################################################
+################################################################ 
 
 #################################################################
 ## co
@@ -70,4 +78,4 @@ target_link_libraries(${PROJECT_NAME} ${MySQL_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} "D:/develop/co/lib/base.lib")
 
-file(COPY ${CMAKE_SOURCE_DIR}/setting.json DESTINATION ${CMAKE_BINARY_DIR}) 
+file(COPY ${CMAKE_SOURCE_DIR}/setting.json DESTINATION ${CMAKE_BINARY_DIR})  

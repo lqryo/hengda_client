@@ -1,6 +1,5 @@
 #include "recordwidget.h"
 #include "database.h"
-#include "tcpclient.h"
 #include "alarmwindow.h"
 
 /*

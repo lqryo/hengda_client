@@ -15,7 +15,6 @@
 #include <QHeaderView>
 #include "utils.h"
 #include "addcamerawindow.h"
-#include "tcpclient.h"
 
 
 class DeviceWidget : public QWidget {

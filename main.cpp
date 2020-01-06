@@ -1,16 +1,14 @@
 #include <QApplication>
 #include "gui/mainwindow.h"
 #include "utils.h"
-#include "tcpclient.h"
-#include "tcpclient2.h"
 #include "videotest.h"
 #include <functional>
 #include <iostream>
 #include "settingwidget.h"
+#include <fstream>
 
 #include "base/rpc.h"
 #include "rpcclient.h"
-#include <fstream>
 
 
 Mutex mtx;
@@ -27,24 +25,24 @@ std::vector<AlarmWindow*> DeServImpl:: alarms;
 std::string g_serverip;
 std::string g_cameraip;
 
-std::string g_server_ip;
 std::string g_client_ip;
 
-void showvideo(nlohmann::json j)
-{
-	qDebug() << "in showvideo function";
-	VideotestWidget::videoList->clear();
-	for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
-		std::string temp = j[it.key()].get<std::string>();
-		VideotestWidget::videoList->addItem(QString::fromStdString(temp));
-	}
-}
 
 
 int main(int argc, char* argv[])
 {
+	//google::InitGoogleLogging(argv[0]);
+	//google::SetLogDestination(google::GLOG_INFO, "borderlog"); // set log file path
+
+	//LOG(INFO) << "start";
+
 	flag::init(argc, argv);
 	log::init();
+
+	LOG << "start" ;
+
+//	log::close();
+
 
     QApplication a(argc, argv);
 
@@ -53,25 +51,9 @@ int main(int argc, char* argv[])
 	VideotestWidget::videoList = new QListWidget();
 	MarkWidget::cam_cbox_ = new QComboBox();
 	VideotestWidget::CameraList = new QListWidget();
-//	TcpClient2::instance().connect();
-//	TcpClient::instance().connect();
-
-	//192.168.2.111	8893
-	std::function<void(nlohmann::json)> callback;
-	VideotestWidget videotest;
-	callback = showvideo;
-
-
-//	rpc::Server* server = rpc::new_server("192.168.2.12", 9900, "");
-//	server->add_service(new DeServImpl);
-//	server->start();
 
     MainWindow window;
     window.show();
 
-	
-
     return a.exec();
-
-
 }
