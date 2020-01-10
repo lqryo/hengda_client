@@ -26,6 +26,7 @@
 #include "base/thread.h"
 #include "base/fastream.h"
 #include "base/fs.h"
+#include "base/log.h"
 #include <fstream>
 #include <sstream>
 #include <mutex>
@@ -49,6 +50,7 @@ public:
 		fastring s(buf);
 		Json y = json::parse(s.data(), s.size());
 		std::cout << y.pretty() << std::endl;
+		WLOG << "setting json is " << y.str();
 		Json client_ip = y.find("client_ip");
 		if (client_ip.is_string()) {
 			g_client_ip = client_ip.get_string();
@@ -68,12 +70,10 @@ protected:
 		server->start();
 		while (!stop_) {
 			sleep::sec(5);
-			std::cout << "running" << std::endl;
 		}		
 	}
 private:
 	bool stop_ = false;
-	std::string ip;
 };
 
 class AlramThread : public QThread
@@ -92,6 +92,7 @@ protected:
 				MutexGuard g(mtx);
 				if (DeServImpl::alarms.size() > 0) {
 					emit hasAlarm();
+					WLOG << "emit hasAlarm signal";
 				}
 			}
 			sleep::sec(1);

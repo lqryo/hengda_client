@@ -2,22 +2,6 @@
 #include "database.h"
 #include "alarmwindow.h"
 
-/*
-	TcpClient1::instance().responseMapping("/camera/alarm", [this](nlohmann::json data) {
-		qDebug() << "in responseMapping /camera/alarm callbackfunction";
-		Alarm alarm(data);
-		if (!AlarmService::insert(alarm)) {
-			qDebug() << "插入报警失败";
-		}
-
-		AlarmWindow *alarm_window = new AlarmWindow();
-		alarm_window->setAlarm(alarm);
-		alarm_window->show();
-
-		query();
-	});
-*/
-
 
 RecordWidget::RecordWidget(QWidget * parent)
 	: QWidget(parent) 
@@ -39,13 +23,12 @@ void RecordWidget::showAlarm()
 		{
 			MutexGuard g(mtx);
 			alarms_.swap(DeServImpl::alarms);
+			WLOG << "alarms_ size is " << alarms_.size();
 		}
 		for (size_t i = 0; i < alarms_.size(); ++i) {
 			alarms_[i]->show();
 		}
 	}
-
-
 }
 
 void RecordWidget::updatePage(const std::vector<Alarm>& alarms)

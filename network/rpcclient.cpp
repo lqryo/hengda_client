@@ -4,6 +4,7 @@
 #include <iostream>
 #include <mutex>
 #include "base/thread.h"
+#include "base/log.h"
 
 extern Mutex mtx;
 
@@ -45,6 +46,7 @@ void DeServImpl::report_alarm(const Json& req, Json& res)
 	{
 		MutexGuard g(mtx);
 		alarms.push_back(alarm_window);
+		WLOG << "alarms size is " << alarms.size();
 	}
 
 //	alarm_window->show();

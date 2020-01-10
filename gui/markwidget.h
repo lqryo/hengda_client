@@ -11,13 +11,13 @@
 #include <QPixmap>
 #include <fstream>
 #include <QComboBox>
+#include <QMessageBox>
 #include "imageeditmenu.h"
 #include "canvaswidget.h"
 #include "base/json.h"
 #include "base/time.h"
 #include "base/rpc.h"
 
-extern int g_port;
 
 class MarkWidget : public QWidget {
     Q_OBJECT
@@ -92,7 +92,9 @@ public:
         connect(menu_, &ImageEditMenu::changed, canvas_, &CanvasWidget::graph);
 
         connect(ok_btn_, &QPushButton::clicked, canvas_, &CanvasWidget::save);
-        connect(cancel_btn_, &QPushButton::clicked, canvas_, &CanvasWidget::clear);
+		connect(cancel_btn_, &QPushButton::clicked, canvas_, &CanvasWidget::clear);
+
+		connect(this, &MarkWidget::info, this, &MarkWidget::info_process);
 
 		cam_cbox_->setDuplicatesEnabled(true);
     }
@@ -101,6 +103,20 @@ public:
 
 public slots:
     void showFrameOfCamera(QString idx);
+	void info_process(int code) {
+		if (code == 1) {
+			QMessageBox::information(this, tr("错误"), tr("无法连接ipc"), QMessageBox::Ok);
+		}
+		else if (code == 2) {
+			QMessageBox::information(this, tr("错误"), tr("获取图片失败"), QMessageBox::Ok);
+		}
+		else if (code == 3) {
+			QMessageBox::information(this, tr("错误"), tr("图片打开失败或不存在"), QMessageBox::Ok);
+		}
+		else {
+			QMessageBox::information(this, tr("错误"), tr("未知错误"), QMessageBox::Ok);
+		}
+	}
 
 protected:
     void showEvent(QShowEvent *event) override ;
@@ -114,7 +130,10 @@ private:
 
 	void client_fun();
 
-	std::string ip_;
+	std::string _cameraIp;
+
+signals:
+	void info(int code);
 
 };
 

@@ -111,17 +111,18 @@ public:
 
 				_layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
 				//            auto reset = new QPushButton("重置");
-				applyBtn_ = new QPushButton("启动ipc");
-				addBtn_ = new QPushButton("添加摄像头");
+				startIPCBtn_ = new QPushButton("启动ipc");
+				addCameraBtn_ = new QPushButton("添加摄像头");
 
-				_layout->addWidget(addBtn_);
-				_layout->addWidget(applyBtn_);
+				_layout->addWidget(addCameraBtn_);
+				_layout->addWidget(startIPCBtn_);
 				//            _layout->addWidget(reset);
 
 			}
 
-			connect(addBtn_, &QPushButton::clicked, this, &SettingWidget::addCamera);
-			connect(applyBtn_, &QPushButton::clicked, this, &SettingWidget::addIP);
+			connect(addCameraBtn_, &QPushButton::clicked, this, &SettingWidget::addCamera);
+			connect(startIPCBtn_, &QPushButton::clicked, this, &SettingWidget::startIPC);
+			connect(this, &SettingWidget::info, this, &SettingWidget::info_process);
 
 		}
 	}
@@ -135,8 +136,8 @@ private:
 	QLineEdit* codestream_;
 	QLineEdit* film_;
 
-	QPushButton* addBtn_;
-	QPushButton* applyBtn_;
+	QPushButton* addCameraBtn_;
+	QPushButton* startIPCBtn_;
 
 	void addCamera()
 	{
@@ -177,54 +178,38 @@ private:
 		}
 	}
 
-	void addIP()
+	void startIPC()  //启动ipc
 	{
 		QString ip = serverip_->text();
 		System::instance().server_ip_ = ip;
-		Json x = json::object();
-		x.add_member("ip", "1.1.1.1");
 
 	//	client = rpc::new_client(ip.toStdString().c_str(), 9910, "");
 		go(&SettingWidget::client_fun,this);
 
 
-		QMessageBox::information(this, tr("提示"), tr("服务器连接成功"), QMessageBox::Ok);
 	}
 
-	void client_fun() {
-		LOG << "in client fun";
-		QString camera_ip = cameraName_->text();
-		QString server_ip = serverip_->text();
-		g_serverip = server_ip.toStdString();
+	void client_fun();
 
-		std::cout << "ip is " << server_ip.toStdString() << std::endl;
-		std::string ip = server_ip.toStdString();
-
-
-		rpc::Client* c = rpc::new_client(ip.c_str(), 9910, "");
-		Json req, res;
-		req.add_member("req_id", now::ms());
-		req.add_member("method", "set_egbd_task");
-		Json params = json::object();
-		{
-			params.add_member("ip", camera_ip.toStdString().c_str());
-			params.add_member("port", 9910);
-			std::string url = username_->text().toStdString();
-			std::cout << url << std::endl;
-			params.add_member("rtsp_url", url.c_str());
-			params.add_member("type", 1);
+	void info_process(int flag)
+	{
+		if (flag == 1) {
+			QMessageBox::information(this, tr("错误"), tr("网络连接失败"), QMessageBox::Ok);
 		}
-		req.add_member("params", params);
-		std::cout << req.pretty() << std::endl;
-		c->call(req, res);
-		std::cout << res.pretty() << std::endl;
-
-		delete c;
+		else if(flag == 2){
+			QMessageBox::information(this, tr("错误"), tr("启动ipc失败"), QMessageBox::Ok);
+		}
+		else if (flag == 0) {
+			QMessageBox::information(this, tr("提示"), tr("启动ipc成功"), QMessageBox::Ok);
+		}
+		else {
+			QMessageBox::information(this, tr("提示"), tr("未知错误"), QMessageBox::Ok);
+		}
 	}
 
+signals:
+	void info(int flag);
 
-
-//	rpc::Client* client;
 };// SettingWidget class
 
 

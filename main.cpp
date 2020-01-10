@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QFile>
 #include "gui/mainwindow.h"
 #include "utils.h"
 #include "videotest.h"
@@ -9,6 +10,8 @@
 
 #include "base/rpc.h"
 #include "rpcclient.h"
+
+# define LOGDEL
 
 
 Mutex mtx;
@@ -24,17 +27,17 @@ std::vector<AlarmWindow*> DeServImpl:: alarms;
 
 std::string g_serverip;
 std::string g_cameraip;
-
 std::string g_client_ip;
+
 
 
 
 int main(int argc, char* argv[])
 {
-	//google::InitGoogleLogging(argv[0]);
-	//google::SetLogDestination(google::GLOG_INFO, "borderlog"); // set log file path
-
-	//LOG(INFO) << "start";
+#ifdef LOGDEL
+	// 删除之前的日志文件
+	QFile::remove(QString("./logs/Border.log"));
+#endif
 
 	flag::init(argc, argv);
 	log::init();

@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
  
 set(CMAKE_CXX_STANDARD 14)
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8") 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4819 /wd4828 /utf-8")   
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
  	add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES) 
 	# Use the static C library for all build types
@@ -62,8 +62,8 @@ file(GLOB_RECURSE GUI_FILES ./gui/*.h ./gui/*.cpp ./gui/widgets/*.h ./gui/widget
 include_directories(gui)
 include_directories(gui/widgets)
 
-file(GLOB_RECURSE MODEL_FILES ./model/*.h ./model/*.cpp) 
-include_directories(model)
+file(GLOB_RECURSE MODEL_FILES ./model/*.h ./model/*.cpp)  
+include_directories(model) 
 
 file(GLOB_RECURSE DB_FILES ./db/*.h  ./db/*.cpp)  
 include_directories(db)
@@ -77,5 +77,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Netwo
 target_link_libraries(${PROJECT_NAME} ${MySQL_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} "D:/develop/co/lib/base.lib")
+target_link_libraries(${PROJECT_NAME} "iphlpapi.lib")
+target_link_libraries(${PROJECT_NAME} "WS2_32.lib")
 
 file(COPY ${CMAKE_SOURCE_DIR}/setting.json DESTINATION ${CMAKE_BINARY_DIR})  

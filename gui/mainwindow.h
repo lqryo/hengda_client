@@ -11,7 +11,6 @@
 #include "recordwidget.h"
 #include "settingwidget.h"
 #include "videotest.h"
-// #include "glog/logging.h"
 
 class MainWindow : public MainWidget {
 	Q_OBJECT
@@ -28,8 +27,6 @@ public:
 		addWidget(new IconTextButton(QPixmap(":/image/res/camera"), tr("测试"), true), new VideotestWidget());
 
 		menu_layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::Expanding, QSizePolicy::Expanding));
-		WLOG << "MainWindow";
-		std::cout << "MainWindow" << std::endl;
 	}
 
 };
