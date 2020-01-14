@@ -26,7 +26,7 @@ std::map<int, std::string> VideotestWidget::port2ip;
 std::vector<AlarmWindow*> DeServImpl:: alarms;
 
 std::string g_serverip;
-std::string g_cameraip;
+std::string g_cameraip; // 用于传边界数据
 std::string g_client_ip;
 
 

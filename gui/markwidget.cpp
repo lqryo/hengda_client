@@ -9,6 +9,7 @@
 extern bool ICMPPing(const char* szIP);
 
 extern std::string g_serverip;
+extern std::string g_cameraip;
 
 void MarkWidget::showEvent(QShowEvent *event)
 {
@@ -31,7 +32,7 @@ void MarkWidget::showFrameOfCamera(QString idx)
 	//ip_ = device.name();
 	//g_cameraip = device.name();
 
-	_cameraIp = idx.toStdString();
+	g_cameraip = idx.toStdString();
 
 	go(&MarkWidget::client_fun, this);
 }
@@ -53,7 +54,7 @@ void MarkWidget::client_fun()
 
 	Json params = json::object();
 	{
-		params.add_member("ip", _cameraIp.c_str());
+		params.add_member("ip", g_cameraip.c_str());
 		params.add_member("port", 9910);
 	}
 	req.add_member("params", params);

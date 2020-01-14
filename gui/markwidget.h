@@ -130,8 +130,6 @@ private:
 
 	void client_fun();
 
-	std::string _cameraIp;
-
 signals:
 	void info(int code);
 
