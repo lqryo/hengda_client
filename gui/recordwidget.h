@@ -64,8 +64,8 @@ protected:
 
 	void run()
 	{
-		rpc::Server* server = rpc::new_server(g_client_ip.c_str(), 9900, "");
-	//	rpc::Server* server = rpc::new_server("127.0.0.1", 9900, "");
+	//	rpc::Server* server = rpc::new_server(g_client_ip.c_str(), 9900, "");
+		rpc::Server* server = rpc::new_server("127.0.0.1", 9900, "");
 		server->add_service(new DeServImpl);
 		server->start();
 		while (!stop_) {

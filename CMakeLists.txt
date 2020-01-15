@@ -21,7 +21,7 @@ if(MSVC)
     endforeach()  
 endif(MSVC) 
 
-################################################################    
+################################################################   
 ## OpenCV
 #find_package(OpenCV REQUIRED) 
 #include_directories(${OpenCV_INCLUDE_DIRS})
@@ -47,7 +47,7 @@ find_package(Qt5 COMPONENTS Core Gui Widgets Network CONFIG REQUIRED)
 find_package(MySQL REQUIRED)
 include_directories(${MySQL_INCLUDE_DIRS})
 
-################################################################ 
+################################################################  
 
 #################################################################
 ## co

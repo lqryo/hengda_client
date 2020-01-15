@@ -32,29 +32,16 @@ public:
 		layout->addWidget(image_);
 		image_->setFixedSize(960, 540);
 	}
-//	AlarmWindow(const AlarmWindow&) = default;
-//	AlarmWindow& operator=(const AlarmWindow&) = default;
 
-#define alarmrequest(port)	\
-TcpClient##port::instance().request("/camera/alarm/image", params, [this](std::string data) {	\
-	qDebug() << "request /camera/alarm/image";	\
-	auto xx = QImage::fromData(reinterpret_cast<const uchar *>(data.c_str()), data.size());	\
-	QPixmap pixmap = QPixmap::fromImage(xx).scaled(QSize(960, 540), Qt::KeepAspectRatio, Qt::SmoothTransformation);	\
-	image_->setPixmap(pixmap);	\
-	});	
 
 	void setAlarm(const Alarm& alarm)
 	{
-		int port = alarm.port_;
-		std::string ip = VideotestWidget::port2ip[port];
-
 		qDebug() << "in SetAlarm";
-		std::string text = ip + " 于 " + alarm.time_ + " 发生 " + (alarm.type_ == 1 ? "越界" : "入侵");
+		std::string text = alarm.ip_ + " 于 " + alarm.time_ + " 发生 " + (alarm.type_ == 1 ? "越界" : "入侵");
 		text_->setText(text.c_str());
 
 		nlohmann::json params;
 		params["path"] = alarm.path_;
-
 	}
 
 public:

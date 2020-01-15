@@ -17,8 +17,14 @@
 #include <string>
 #include <windows.h>
 #include <QTcpSocket>
+#include <base/json.h>
+#include <base/rpc.h>
+#include <base/time.h>
+#include <base/fastring.h>
+#include <base/co.h>
 
-
+extern bool ICMPPing(const char* szIP);
+extern std::string g_serverip;
 
 class VideotestWidget : public QWidget {
 	Q_OBJECT
@@ -28,38 +34,15 @@ public:
 		auto layout = new QVBoxLayout();
 		setLayout(layout);
 
-		//auto autorun = new QCheckBox("开机启动");
-		//layout->addWidget(autorun);
-
 		{
 			auto _layout = new QHBoxLayout();
 			layout->addLayout(_layout);
 
 			auto label = new QLabel("测试视频列表");
 			_layout->addWidget(label);
-
-		//	auto _input = new QLineEdit();
-		//	_layout->addWidget(_input);
 		}
 
-		//列表显示测试视频
-		{
-		//	videoList = new QListWidget(this);
-			layout->addWidget(videoList);
-		//	videoList->addItem("1.mp4");
-		//	videoList->addItem("2.mp4");
-		//	videoList->addItem("3.mp4");
-		}
-
-		{
-			auto _layout = new QHBoxLayout();
-			layout->addLayout(_layout);
-
-			auto label = new QLabel("测试摄像头");
-			_layout->addWidget(label);
-			
-			layout->addWidget(CameraList);
-		}
+		layout->addWidget(videoList);
 
 		layout->addSpacerItem(new QSpacerItem(20, 50, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 
@@ -71,81 +54,113 @@ public:
 			select = new QPushButton("选择视频");
 			auto apply = new QPushButton("获取视频");
 
-			openCamera = new QPushButton("选择相机");
-			closeCamera = new QPushButton("关闭相机");
-			connectCamera = new QPushButton("连接相机");
-
-//			auto connection = new QPushButton("连接");
-
 			select->setDisabled(true);
 
-//			connect(connection, &QPushButton::clicked, this, &VideotestWidget::connection);
 			connect(apply, &QPushButton::clicked, this, &VideotestWidget::applyclick);
 			connect(select, &QPushButton::clicked, this, &VideotestWidget::selection);
-			connect(openCamera, &QPushButton::clicked, this, &VideotestWidget::Open);
-			connect(closeCamera, &QPushButton::clicked, this, &VideotestWidget::Close);
-			connect(connectCamera, &QPushButton::clicked, this, &VideotestWidget::link);
 
-			_layout->addWidget(openCamera);
-//			_layout->addWidget(closeCamera);
-//			_layout->addWidget(connectCamera);
+
 			_layout->addWidget(apply);
 			_layout->addWidget(select);
 			
 		}
 
+		connect(this, &VideotestWidget::info, this, &VideotestWidget::info_process);
 	}
 
 	static QListWidget* videoList;
-	static QListWidget* CameraList;
-	static std::map<std::string, int> ip2port;
-	static std::map<int, std::string> port2ip;
+//	static QListWidget* CameraList;
+
+public slots:
+	void info_process(int code)
+	{
+		if (code == 1) {
+			QMessageBox::information(this, tr("错误"), tr("无法连接服务器"), QMessageBox::Ok);
+		}
+		else if (code == 2) {
+			QMessageBox::information(this, tr("错误"), tr("获取视频列表失败"), QMessageBox::Ok);
+		}
+		else if (code == 3) {
+			QMessageBox::information(this, tr("错误"), tr("视频打开失败"), QMessageBox::Ok);
+		}
+		else {
+			QMessageBox::information(this, tr("错误"), tr("未知错误"), QMessageBox::Ok);
+		}
+	}
+
+
 
 private:
+	QPushButton* select;
 
 
 	void selection()
 	{
-
+		go(&VideotestWidget::selection_client_fun, this);
 	}
 
 	void applyclick()
 	{
-
+		go(&VideotestWidget::apply_client_fun, this);
 	}
 
-	void link()
+	void apply_client_fun()   //请求测试视频列表
 	{
-		
+		if (!ICMPPing(g_serverip.c_str())) {
+			emit info(1); //code=1,服务器连接失败 
+			return;
+		}
+
+		Json req, res;
+
+		req.add_member("req_id", now::ms());
+		req.add_member("method", "apply_video");
+
+		rpc::Client* c = rpc::new_client(g_serverip.c_str(), 9910, "");
+
+		c->call(req, res);
+		if (res.is_null() || res["code"].get_int()!= 200) {
+			emit info(2); //code=2,.获取视频列表失败
+			return;
+		}
+		else {
+			auto videos = res["videos"];
+
+			for (uint32 i = 0; i < videos.size(); i++) {
+				Json& v = videos[i];
+				videoList->addItem(v.str().c_str());
+			}
+			if(videos.size() != 0) select->setDisabled(false);
+		}		
 	}
 
-	void Open()
+	void selection_client_fun()
 	{
+		if (!ICMPPing(g_serverip.c_str())) {
+			emit info(1); //code=1,服务器连接失败 
+			return;
+		}
 
-		
+		Json req, res;
+		req.add_member("req_id", now::ms());
+		req.add_member("method", "select_video");
+		QString videoname = videoList->currentItem()->text();
+		req.add_member("videoname", videoname.toStdString().c_str());
 
+		rpc::Client* c = rpc::new_client(g_serverip.c_str(), 9910, "");
+
+		c->call(req, res);
+		if (res.is_null() || res["code"].get_int() != 200) {
+			emit info(3);
+			return;
+		}
 	}
 
-	void Close()
-	{
 
-	}
 
-	void connection()
-	{
-
-	//	TcpClient::instance().connect();
-	//	QMessageBox::information(this, tr("info"), tr("连接服务端成功"), QMessageBox::Ok);
-	//	showvideo();
-	}
-	QPushButton* select;
-	QPushButton* openCamera;
-	QPushButton* closeCamera;
-	QPushButton* connectCamera;
-
-private:
-	int port_off = 0;
-	int count = 0;
+signals:
+	int info(int code);
+	
 
 
 };

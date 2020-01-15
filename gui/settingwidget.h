@@ -165,7 +165,7 @@ private:
 				System::instance().addCamera(camerainfo);
 
 				MarkWidget::cam_cbox_->addItem(name);
-				VideotestWidget::CameraList->addItem(name);
+
 				QMessageBox::information(this, tr("提示"), tr("摄像头添加成功"), QMessageBox::Ok);
 				//cameraName_->clear();
 				//cameraPwd_->clear();

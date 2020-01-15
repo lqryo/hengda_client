@@ -6,6 +6,8 @@
 #include "base/thread.h"
 #include "base/log.h"
 
+#undef FLG_rpc_log
+
 extern Mutex mtx;
 
 DeServImpl::DeServImpl() {
@@ -42,6 +44,11 @@ void DeServImpl::report_alarm(const Json& req, Json& res)
 	auto xx = QImage::fromData(reinterpret_cast<const uchar *>(img_decode.c_str()), img_decode.size());
 	QPixmap pixmap = QPixmap::fromImage(xx).scaled(QSize(960, 540), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	alarm_window->image_->setPixmap(pixmap);
+	WLOG << "report alarm req_id:" << req["req_id"].get_int() <<
+		" method: " << req["method"].get_string() <<
+		" ipc_ip: " << req["ipc_ip"].get_string() <<
+		" time: " << req["time"].get_string() <<
+		" type: " << req["type"].get_string();
 
 	{
 		MutexGuard g(mtx);
